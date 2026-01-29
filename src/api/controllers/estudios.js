@@ -72,4 +72,10 @@ const deleteEstudio = async (req, res) => {
   }
 }
 
-module.exports = { createEstudio, getEstudios, updateEstudio, deleteEstudio }
+module.exports = {
+  createEstudio,
+  getEstudios,
+  getEstudioById,
+  updateEstudio,
+  deleteEstudio
+}
