@@ -7,11 +7,12 @@ const {
   updateEstudio,
   deleteEstudio
 } = require('../controllers/estudios')
+const upload = require('../middlewares/upload')
 
-router.post('/', createEstudio)
+router.post('/', upload, createEstudio)
 router.get('/', getEstudios)
 router.get('/:id', getEstudioById)
-router.put('/:id', updateEstudio)
+router.put('/:id', upload, updateEstudio)
 router.delete('/:id', deleteEstudio)
 
 module.exports = router

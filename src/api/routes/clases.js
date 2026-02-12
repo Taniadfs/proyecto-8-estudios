@@ -7,11 +7,12 @@ const {
   updateClase,
   deleteClase
 } = require('../controllers/clases')
+const upload = require('../middlewares/upload')
 
-router.post('/', createClase)
+router.post('/', upload, createClase)
 router.get('/', getClases)
 router.get('/:id', getClaseById)
-router.put('/:id', updateClase)
+router.put('/:id', upload, updateClase)
 router.delete('/:id', deleteClase)
 
 module.exports = router
