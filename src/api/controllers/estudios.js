@@ -1,5 +1,5 @@
 const Estudio = require('../models/estudio')
-const cloudinary = require('../config/cloudinary')
+const cloudinary = require('../../config/cloudinary')
 
 const createEstudio = async (req, res) => {
   try {

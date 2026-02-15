@@ -7,7 +7,7 @@ const {
   updateClase,
   deleteClase
 } = require('../controllers/clases')
-const upload = require('../middlewares/upload')
+const upload = require('../../middlewares/upload')
 
 router.post('/', upload, createClase)
 router.get('/', getClases)
