@@ -1,8 +1,20 @@
 const Estudio = require('../models/estudio')
+const cloudinary = require('../config/cloudinary')
 
 const createEstudio = async (req, res) => {
   try {
-    const nuevoEstudio = new Estudio(req.body)
+    let urlImagen = null
+    if (req.file) {
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+
+      const resultado = await cloudinary.uploader.upload(fileStr, {
+        resource_type: 'auto'
+      })
+
+      urlImagen = resultado.secure_url
+    }
+
+    const nuevoEstudio = new Estudio({ ...req.body, imagen: urlImagen })
     const estudioGuardado = await nuevoEstudio.save()
     res.status(201).json(estudioGuardado)
   } catch (error) {
