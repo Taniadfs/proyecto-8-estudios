@@ -1,5 +1,6 @@
 const Clase = require('../models/Clase')
 const Estudio = require('../models/estudio')
+const cloudinary = require('../../config/cloudinary')
 
 const createClase = async (req, res) => {
   try {
@@ -7,7 +8,17 @@ const createClase = async (req, res) => {
     if (!estudioExiste) {
       return res.status(404).json({ message: 'El estudio no existe' })
     }
-    const nuevaClase = new Clase(req.body)
+    let urlImagen = null
+    if (req.file) {
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+
+      const resultado = await cloudinary.uploader.upload(fileStr, {
+        resource_type: 'auto'
+      })
+      urlImagen = resultado.secure_url
+    }
+
+    const nuevaClase = new Clase({ ...req.body, imagen: urlImagen })
     const claseGuardada = await nuevaClase.save()
     res.status(201).json(claseGuardada)
   } catch (error) {
