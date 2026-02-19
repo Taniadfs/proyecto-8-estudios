@@ -1,4 +1,4 @@
-const Clase = require('../models/Clase')
+const Clase = require('../models/clase')
 const Estudio = require('../models/estudio')
 const cloudinary = require('../../config/cloudinary')
 
