@@ -5,6 +5,7 @@ const { connectDB } = require('../config/db')
 const estudiosData = [
   {
     nombre: 'Estudio de Yoga',
+
     email: 'yoga@estudio.com',
     direccion: 'Calle Principal 123',
     descripcion: 'Un estudio de yoga para todos los niveles',
