@@ -9,6 +9,7 @@ const createClase = async (req, res) => {
       return res.status(404).json({ message: 'El estudio no existe' })
     }
     let urlImagen = null
+    let publicId = null
     if (req.file) {
       const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
 
@@ -16,9 +17,14 @@ const createClase = async (req, res) => {
         resource_type: 'auto'
       })
       urlImagen = resultado.secure_url
+      publicId = resultado.public_id
     }
 
-    const nuevaClase = new Clase({ ...req.body, imagen: urlImagen })
+    const nuevaClase = new Clase({
+      ...req.body,
+      imagen: urlImagen,
+      imagenPublicId: publicId
+    })
     const claseGuardada = await nuevaClase.save()
     res.status(201).json(claseGuardada)
   } catch (error) {
@@ -55,6 +61,8 @@ const getClaseById = async (req, res) => {
 const updateClase = async (req, res) => {
   try {
     const { id } = req.params
+    let urlImagen = null
+    let publicId = null
 
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: 'No hay datos para actualizar' })
@@ -66,14 +74,30 @@ const updateClase = async (req, res) => {
         return res.status(404).json({ message: 'El estudio no existe' })
       }
     }
+    const claseExistente = await Clase.findById(id)
+    if (!claseExistente) {
+      return res.status(404).json({ message: 'Clase no encontrada' })
+    }
+    if (req.file) {
+      if (claseExistente.imagenPublicId) {
+        await cloudinary.uploader.destroy(claseExistente.imagenPublicId)
+      }
+      const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+      const resultado = await cloudinary.uploader.upload(fileStr, {
+        resource_type: 'auto'
+      })
+      urlImagen = resultado.secure_url
+      publicId = resultado.public_id
+      req.body.imagen = urlImagen
+      req.body.imagenPublicId = publicId
+    }
     const claseActualizada = await Clase.findByIdAndUpdate(id, req.body, {
       new: true
     })
-    if (!claseActualizada) {
-      return res.status(404).json({ message: 'Clase no encontrada' })
-    }
+
     res.status(200).json(claseActualizada)
   } catch (error) {
+    console.log('ERROR UPDATECLASE:', error.message)
     res
       .status(500)
       .json({ message: 'error al actualizar la clase', error: error.message })

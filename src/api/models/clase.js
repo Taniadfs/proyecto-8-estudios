@@ -63,6 +63,10 @@ const claseSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Estudio',
       required: [true, 'El estudio es obligatorio']
+    },
+    imagenPublicId: {
+      type: String,
+      trim: true
     }
   },
   { timestamps: true, collection: 'clases' }

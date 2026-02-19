@@ -28,7 +28,9 @@ const estudioSchema = new mongoose.Schema(
       unique: true,
       trim: true
     },
-    imagen: { type: String, trim: true }
+    imagen: { type: String, trim: true },
+
+    imagenPublicId: { type: String, trim: true }
   },
 
   { timestamps: true, collection: 'estudios' }

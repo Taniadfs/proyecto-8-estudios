@@ -13,8 +13,9 @@ app.use(express.json())
 app.use('/api/estudios', estudiosRoutes)
 app.use('/api/clases', clasesRoutes)
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Algo salió mal!')
+  res
+    .status(500)
+    .json({ message: 'Error interno del servidor', error: err.message })
 })
 app.listen(port, () => {
   console.log(`Servidor levantado en: http://localhost:${port}`)
