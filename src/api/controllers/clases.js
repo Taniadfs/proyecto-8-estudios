@@ -14,7 +14,8 @@ const createClase = async (req, res) => {
       const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
 
       const resultado = await cloudinary.uploader.upload(fileStr, {
-        resource_type: 'auto'
+        resource_type: 'auto',
+        folder: 'clases'
       })
       urlImagen = resultado.secure_url
       publicId = resultado.public_id
@@ -84,7 +85,8 @@ const updateClase = async (req, res) => {
       }
       const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
       const resultado = await cloudinary.uploader.upload(fileStr, {
-        resource_type: 'auto'
+        resource_type: 'auto',
+        folder: 'clases'
       })
       urlImagen = resultado.secure_url
       publicId = resultado.public_id
@@ -107,10 +109,18 @@ const updateClase = async (req, res) => {
 const deleteClase = async (req, res) => {
   try {
     const { id } = req.params
-    const claseEliminada = await Clase.findByIdAndDelete(id)
-    if (!claseEliminada) {
+
+    const claseExistente = await Clase.findById(id)
+    if (!claseExistente) {
       return res.status(404).json({ message: 'Clase no encontrada' })
     }
+
+    if (claseExistente.imagenPublicId) {
+      await cloudinary.uploader.destroy(claseExistente.imagenPublicId)
+    }
+
+    const claseEliminada = await Clase.findByIdAndDelete(id)
+
     res.status(200).json({ message: 'Clase eliminada correctamente' })
   } catch (error) {
     res

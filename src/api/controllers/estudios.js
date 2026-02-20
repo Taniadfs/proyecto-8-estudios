@@ -9,7 +9,8 @@ const createEstudio = async (req, res) => {
       const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
 
       const resultado = await cloudinary.uploader.upload(fileStr, {
-        resource_type: 'auto'
+        resource_type: 'auto',
+        folder: 'estudios'
       })
 
       urlImagen = resultado.secure_url
@@ -74,7 +75,8 @@ const updateEstudio = async (req, res) => {
       }
       const fileStr = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
       const resultado = await cloudinary.uploader.upload(fileStr, {
-        resource_type: 'auto'
+        resource_type: 'auto',
+        folder: 'estudios'
       })
       urlImagen = resultado.secure_url
       publicId = resultado.public_id
@@ -97,6 +99,16 @@ const updateEstudio = async (req, res) => {
 const deleteEstudio = async (req, res) => {
   try {
     const { id } = req.params
+
+    const estudioExistente = await Estudio.findById(id)
+    if (!estudioExistente) {
+      return res.status(404).json({ message: 'El estudio no existe' })
+    }
+
+    if (estudioExistente.imagenPublicId) {
+      await cloudinary.uploader.destroy(estudioExistente.imagenPublicId)
+    }
+
     const estudioEliminado = await Estudio.findByIdAndDelete(id)
     if (!estudioEliminado) {
       return res.status(404).json({ message: 'Estudio no encontrado' })
