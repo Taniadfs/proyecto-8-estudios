@@ -61,7 +61,7 @@ const updateEstudio = async (req, res) => {
     let urlImagen = null
     let publicId = null
 
-    if (Object.keys(req.body).length === 0) {
+    if (Object.keys(req.body).length === 0 && !req.file) {
       return res.status(400).json({ message: 'No hay datos para actualizar' })
     }
 
