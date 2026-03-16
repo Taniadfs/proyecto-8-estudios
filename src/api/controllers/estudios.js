@@ -109,10 +109,12 @@ const deleteEstudio = async (req, res) => {
       await cloudinary.uploader.destroy(estudioExistente.imagenPublicId)
     }
 
-    const estudioEliminado = await Estudio.findByIdAndDelete(id)
+    const estudioEliminado = await Estudio.findById(id)
     if (!estudioEliminado) {
       return res.status(404).json({ message: 'Estudio no encontrado' })
     }
+    await Clase.deleteMany({ studioId: req.params.id })
+    await Estudio.findByIdAndDelete(id)
     res.status(200).json({ message: 'Estudio eliminado correctamente' })
   } catch (error) {
     res
